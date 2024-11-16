@@ -1,10 +1,10 @@
 import { LiaShoppingCartSolid } from "react-icons/lia";
 import { CiLogin } from "react-icons/ci";
-import { BsSearch } from "react-icons/bs";
-import { useState } from "react";
+import Searche from "./searche";
 
 const Heders = () => {
-    const [isTyping, setIsTyping] = useState<boolean>(false);
+    // const [isSearch, setSearch] = useState<boolean>(false);
+    
     return ( 
         <header>
           <h3 className="bg-red-700 text-center text-black text-sm ">با عضویت در کاستومی اولین خرید خود را رایگان انجام بده </h3>
@@ -22,22 +22,13 @@ const Heders = () => {
             <span>
                <CiLogin className="ml-1 text-xl mt-3" />
             </span>
-            <form className="placeholder:flex placeholder: items-center relative" action="">
-                <input
-                 className="h-48px items-center pr-2 pl-10 ml-14 mt-2  outline-none border border-gray-300 rounded-xl shadow-sm w-550px placeholder:text-jigary placeholder:text-sm placeholder:text-right placeholder:m-1 text-right placeholder-opacity-25"
-                  placeholder="جست و جو"
-                   type="text" 
-                   onFocus={()=>setIsTyping(true)}
-                   onBlur={()=>setIsTyping(false)}
-                   onChange={(e)=>e.target.value&&setIsTyping(true)}
-                   />
-                <button className={`absolute left-16 top-4 transition-all duration-300 ${isTyping ?'transform -translate-x-12':''}`} type="button"><BsSearch className="text-lg text-jigary" /></button>
-            </form>
+                   <Searche />
+                
           </div>
           <div className="border-b border-gray-300 my-2 mt-10"></div>
 
         </header>
      );
 }
- 
+  
 export default Heders;
