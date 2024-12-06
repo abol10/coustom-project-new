@@ -1,5 +1,6 @@
 {
-    "recommendations": [
-        "hoovercj.vscode-power-mode"
-    ]
+  "recommendations": [
+    "hoovercj.vscode-power-mode",
+    "illixion.vscode-vibrancy-continued"
+  ]
 }
