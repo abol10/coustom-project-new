@@ -5,6 +5,7 @@ import Bestsellers from './components/pages4/bestSellers'
 import Special from './components/pages5/Specialsale'
 import Populard from './components/pages6/Populardesigns'
 import Topdesingner from './components/pages7/Topdesigners'
+import Newdesign from './components/pages8/new_design'
 import './index.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Special />
       <Populard />
       <Topdesingner />
+      <Newdesign />
      </div>
   )
 }

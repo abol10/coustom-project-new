@@ -115,6 +115,30 @@ const Topdesingner = () => {
                     </div>
                 ))}
             </div>
+            <div className="grid grid-cols-2">
+                <div className="grid grid-cols-2 col-span-1 bg-pink-200 mx-10 mt-6 rounded-lg ">
+                   <div className="col-span-1">
+                   <img className="w-full h-36 rounded-lg" src="/img/ghabm.png"/>
+                   </div>
+                   <div className="col-span-1">
+                    <span  className="flex flex-wrap px-10 text-right font-semibold">محصولات مناسب هدیه دادن به خانوم ها</span>
+                    <button className="mt-11 ml-20 p-2 text-xs border border-red-500 rounded-lg  text-red-600  hover:border-gray-600"> دیدن محصولات </button>
+                   </div>
+                </div>
+
+
+
+
+                <div className="grid grid-cols-2 col-span-1 bg-pink-200 mx-10 mt-6 rounded-lg">
+                <div className="col-span-1">
+                   <img className="w-full h-36 rounded-lg" src="/img/ghabm.png"/>
+                   </div>
+                   <div className="col-span-1">
+                    <span  className="flex flex-wrap px-10 text-right font-semibold">محصولات مناسب هدیه دادن به خانوم ها</span>
+                    <button className="mt-11 ml-20 p-2 text-xs border border-red-500 rounded-lg  text-red-600  hover:border-gray-600"> دیدن محصولات </button>
+                   </div>
+                </div>
+            </div>
         </div>
     );
 };
