@@ -115,7 +115,7 @@ const Topdesingner = () => {
                     </div>
                 ))}
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2" data-aos="fade-left">
                 <div className="grid grid-cols-2 col-span-1 bg-pink-200 mx-10 mt-6 rounded-lg ">
                    <div className="col-span-1">
                    <img className="w-full h-36 rounded-lg" src="/img/ghabm.png"/>

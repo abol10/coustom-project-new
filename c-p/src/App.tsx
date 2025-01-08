@@ -1,29 +1,25 @@
+import {BrowserRouter as Router , Routes , Route} from 'react-router-dom'
 import Heders from './components/pages1/heders'
-import Footer from './components/pages10/footer'
-import Section from './components/pages2/section'
-import Productcategories from './components/pages3/Product-categories'
-import Bestsellers from './components/pages4/bestSellers'
-import Special from './components/pages5/Specialsale'
-import Populard from './components/pages6/Populardesigns'
-import Topdesingner from './components/pages7/Topdesigners'
-import Newdesign from './components/pages8/new_design'
-import Favorite from './components/pages9/Favorites'
 import './index.css'
+import Profileme from './components/my_order/profile'
+import Else from './components/else/else'
+import Login from './components/Login/login'
+import MyForm from './components/Registration/Registration'
 
 function App() {
  
   return (
      <div className=''>
-      <Heders />
-      <Section />
-      <Productcategories />
-      <Bestsellers  />
-      <Special />
-      <Populard />
-      <Topdesingner />
-      <Newdesign />
-      <Favorite />
-      <Footer />
+       <Router>
+        <Routes>
+          <Route path='/' element={<Heders />} />
+          <Route path='myOrder' element={<Profileme />} />
+          <Route path='Login' element={<Login />} />
+          <Route path='S' element={<MyForm />} />
+          <Route path='*' element={<Else />} />
+        </Routes>
+       </Router>
+       
      </div>
   )
 }

@@ -137,7 +137,7 @@ const Newdesign = () => {
                 ))}
              
             </div>
-            <div className="grid grid-cols-4">
+            <div className="grid grid-cols-4" data-aos="fade-left">
                   <div className="col-span-1">
                     <img className="w-52 h-32 mt-10 ml-20 rounded-lg" src="/img/ghabm.png" alt="" />
                   </div>
