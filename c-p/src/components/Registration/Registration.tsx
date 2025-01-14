@@ -96,7 +96,7 @@ function MyForm() {
         <form className="col-span-3 mt-10 border border-gray-100 rounded-xl mr-10 shadow-2xl" onSubmit={handleSubmit(onSubmit)}>
           {/* نمایش ارورهای کلی */}
           <div className="border border-red-500 p-4 rounded-lg mb-4">
-            <h2 className="font-bold text-lg">لیست ارورها</h2>
+            <h2 className="font-bold text-lg text-right">لیست ارورها</h2>
             <ul className="mt-4">
               {Object.entries(errors).map(([field, error]) => (
                 <li key={field} className={`flex items-center justify-end text-ff ${resolvedErrors[field] ? 'text-green-500' : 'text-red-500 '}`}>
@@ -203,7 +203,7 @@ function MyForm() {
           </div>
 
           <div className="flex justify-center mt-10">
-            <button type="submit" className="btn btn-primary">ارسال</button>
+            <button type="submit" className="btn btn-active btn-sm mb-2">ارسال</button>
           </div>
         </form>
       </div>
