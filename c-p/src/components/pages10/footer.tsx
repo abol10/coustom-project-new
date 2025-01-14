@@ -35,9 +35,9 @@ const Footer = () => {
                     <span className=" text-white text-opacity-50 text-xs order-first mr-8">پاسخگویی24ساعته7روزهفته</span>
                 </div>
                 <div className="flex ml-36 mt-16 w-14 h-16">
-                    <img className="rounded-md mr-4" src="/img/ghabm.png" alt="" />
-                    <img className="rounded-md mr-4" src="/img/ghabm.png" alt="" />
-                    <img className="rounded-md mr-4" src="/img/ghabm.png" alt="" />
+                    <img className="rounded-md mr-4" src="/img/01.png" alt="" />
+                    <img className="rounded-md mr-4" src="/img/02.png" alt="" />
+                    <img className="rounded-md mr-4" src="/img/03.png" alt="" />
                 </div>
             </div>
             <div className="col-span-1 mt-10 text-white">
