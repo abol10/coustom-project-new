@@ -3,11 +3,11 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Hede from '../pages1/Hehe';
 import Footer from '../pages10/footer';
-import { FaUser } from "react-icons/fa";
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { handleSignUp } from '../supuuser/User';  // ایمپورت تابع handleSignUp از فایل authOperations
-
+import Navbarrej from '../navbarRej/Navbar';
+import BoxAlert from './BoxAlert';
 
 // تعریف اسکیما با Zod
 const schema = z.object({
@@ -32,7 +32,7 @@ function MyForm() {
   const { register, handleSubmit, formState: { errors }, trigger } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-
+ const[chekedNav,setChekednav]=useState<boolean>(false);
   const [resolvedErrors, setResolvedErrors] = useState<Record<string, boolean>>({
     firstName: false,
     email: false,
@@ -48,8 +48,10 @@ function MyForm() {
     if (result.error) {
       alert(result.error);  // نمایش ارور در صورت وجود
     } else {
-      alert("ثبت‌نام با موفقیت انجام شد!");  // پیام موفقیت
+     
+        setChekednav(true)
       console.log("Form Data:", data);
+      
     }
   };
 
@@ -68,22 +70,15 @@ function MyForm() {
 
     return () => clearInterval(interval);
   }, [errors, trigger]);
-
   return (
     <>
       <Hede />
-      <div className="flex justify-center">
-        <div className="grid justify-center text-jigary mr-20">
-          <FaUser className="ml-6" />
-          <span className="block text-ff mt-2">اطلاعات کاربر</span>
-        </div>
-        <img className="w-36 h-2 mt-3" src="img/Line 38.png" alt="" />
-        <div className="grid justify-center text-jigary ml-20">
-          <FaUser className="ml-6" />
-          <span className="block text-ff mt-2">اطلاعات کاربر</span>
-        </div>
-      </div>
-
+     <Navbarrej />
+             {
+                chekedNav&& (
+                  <BoxAlert setChekednav={setChekednav} state={chekedNav} />
+                )
+              }
       <div className="float-end mr-20">
         <span className="text-jigary text-base font-sans">فرم ثبت نام اطلاعات</span>
       </div>
@@ -128,7 +123,6 @@ function MyForm() {
               />
             </div>
           </div>
-
           <div className="grid grid-cols-2 mt-8">
             <div className="col-span-1">
               <span className="text-ff text-gray-400 float-end mt-3">تحصیلات(اختیاری)</span>
@@ -203,7 +197,7 @@ function MyForm() {
           </div>
 
           <div className="flex justify-center mt-10">
-            <button type="submit" className="btn btn-active btn-sm mb-2">ارسال</button>
+            <button  type="submit" className="btn btn-active btn-sm mb-2">ارسال</button>
           </div>
         </form>
       </div>
