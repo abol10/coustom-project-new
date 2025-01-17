@@ -5,7 +5,7 @@ import Hede from '../pages1/Hehe';
 import Footer from '../pages10/footer';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
-import { handleSignUp } from '../supuuser/User';  // ایمپورت تابع handleSignUp از فایل authOperations
+import { handleSignUp } from '../supuuser/User';  
 import Navbarrej from '../navbarRej/Navbar';
 import BoxAlert from './BoxAlert';
 
@@ -29,10 +29,11 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 function MyForm() {
-  const { register, handleSubmit, formState: { errors }, trigger } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, trigger, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
- const[chekedNav,setChekednav]=useState<boolean>(false);
+  const [chekedNav, setChekednav] = useState<boolean>(false);
+
   const [resolvedErrors, setResolvedErrors] = useState<Record<string, boolean>>({
     firstName: false,
     email: false,
@@ -43,20 +44,22 @@ function MyForm() {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     // صدا زدن تابع handleSignUp برای ثبت‌نام
-    const result = await handleSignUp(data.email, data.password,data.firstName,data.nationalId);
+    const result = await handleSignUp(data.email, data.password, data.firstName, data.nationalId);
 
     if (result.error) {
       alert(result.error);  // نمایش ارور در صورت وجود
     } else {
-     
-        setChekednav(true)
+      setChekednav(true);
       console.log("Form Data:", data);
       
+      // ریست کردن فرم بعد از ارسال موفق
+      reset();
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
+      // بررسی ارورها
       trigger();
       Object.entries(errors).forEach(([field, error]) => {
         if (!error) {
@@ -70,15 +73,16 @@ function MyForm() {
 
     return () => clearInterval(interval);
   }, [errors, trigger]);
+
   return (
     <>
       <Hede />
-     <Navbarrej />
-             {
-                chekedNav&& (
-                  <BoxAlert setChekednav={setChekednav} state={chekedNav} />
-                )
-              }
+      <Navbarrej />
+      {
+        chekedNav && (
+          <BoxAlert setChekednav={setChekednav} state={chekedNav} />
+        )
+      }
       <div className="float-end mr-20">
         <span className="text-jigary text-base font-sans">فرم ثبت نام اطلاعات</span>
       </div>
@@ -197,7 +201,7 @@ function MyForm() {
           </div>
 
           <div className="flex justify-center mt-10">
-            <button  type="submit" className="btn btn-active btn-sm mb-2">ارسال</button>
+            <button type="submit" className="btn btn-active btn-sm mb-2">ارسال</button>
           </div>
         </form>
       </div>
