@@ -7,6 +7,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { handleSignUpNumber } from './User_number';
 import Navbarrej from '../navbarRej/Navbar';
+import Box_Alert from './Box_Alert';
 
 // تعریف اسکیما با Zod
 const schema = z.object({
@@ -18,17 +19,15 @@ const schema = z.object({
     .regex(/^072\d{8}$/, { message: "شماره باید با 072 شروع شده و شامل 11 رقم باشد" }),
   codepost: z.string()
     .length(10, { message: "کد پستی باید دقیقا 10 رقم باشد" })
-    .regex(/^\d{10}$/, { message: "کد پستی فقط باید شامل اعداد باشد" }), // کد پستی باید 10 رقم عدد باشد
-    addrescode: z.string()
-    .min(1, { message: "وارد کردن شهر الزامی هست" })
-  
+    .regex(/^\d{10}$/, { message: "کد پستی فقط باید شامل اعداد باشد" }),
+  addrescode: z.string().min(1, { message: "وارد کردن شهر الزامی هست" }),
 });
 
 // تعریف نوع داده‌های فرم با استفاده از TypeScript
 type FormData = z.infer<typeof schema>;
 
 function Myetalat() {
-  const { register, handleSubmit, formState: { errors }, trigger } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, trigger, setValue, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -39,15 +38,38 @@ function Myetalat() {
     addrescode: false,
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // صدا زدن تابع handleSignUp برای ثبت‌نام
-    const result = await handleSignUpNumber(data.number,  data.numberMe, data.codepost , data.addrescode);
+  const [shaher, setShaher] = useState<string>('');
+  const [ostan, setOstan] = useState<string>('');
+  const [chekedNext, setChekedNext] = useState<boolean>(false);
 
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedShaher = event.target.value;
+    setShaher(selectedShaher);
+
+    // به‌روزرسانی مقدار addrescode با ترکیب استان و شهر
+    setValue('addrescode', `استان: ${ostan}  شهر: ${selectedShaher}`, { shouldValidate: true });
+    trigger('addrescode'); // بررسی ارور برای addrescode بعد از به‌روزرسانی
+  };
+
+  const handleSelectChangeostan = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOstan = event.target.value;
+    setOstan(selectedOstan);
+
+    // به‌روزرسانی مقدار addrescode با ترکیب استان و شهر
+    setValue('addrescode', `${shaher} ${selectedOstan}`, { shouldValidate: true });
+    trigger('addrescode'); // بررسی ارور برای addrescode بعد از به‌روزرسانی
+  };
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const result = await handleSignUpNumber(data.number, data.numberMe, data.codepost, data.addrescode);
     if (result.error) {
-      alert(result.error);  // نمایش ارور در صورت وجود
+      alert(result.error);
     } else {
-      alert("ثبت‌نام با موفقیت انجام شد!"); 
-      setchekedNext(true) // پیام موفقیت
+      setChekedNext(true);  // پیام موفقیت
+      reset();  // پاک کردن فرم
+      // پاک کردن مقادیر `select` ها
+      setShaher('');
+      setOstan('');
       console.log("Form Data:", data);
     }
   };
@@ -68,23 +90,11 @@ function Myetalat() {
     return () => clearInterval(interval);
   }, [errors, trigger]);
 
-  // مقدار پیش‌فرض برای آدرس کامل
-  const [shaher, setshahre] = useState<string>('');
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setshahre(event.target.value);  // مقدار انتخاب‌شده را ذخیره می‌کنیم
-  };
-
-  const [ostan, setostan] = useState<string>('');
-  const handleSelectChangeostan = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setostan(event.target.value);  // مقدار انتخاب‌شده را ذخیره می‌کنیم
-  };
-  const [chekedNext,setchekedNext]=useState<boolean>(false);
-
-
   return (
     <>
       <Hede />
       <Navbarrej />
+      {chekedNext && <Box_Alert setChekednav={setChekedNext} state={chekedNext} />}
       <div className="float-end mr-20">
         <span className="text-jigary text-base font-sans">فرم ثبت نام اطلاعات</span>
       </div>
@@ -134,7 +144,7 @@ function Myetalat() {
             <div className="col-span-1 mr-5">
               <span className="text-ff text-gray-400 float-end mt-3">شهر</span>
               <select
-                {...register}
+                value={shaher}
                 onChange={handleSelectChange}
                 className="select select-bordered select-xs w-5/6 ml-20 mt-2 max-w-xs text-gray-300"
               >
@@ -152,7 +162,7 @@ function Myetalat() {
             <div className="col-span-1 mr-5">
               <span className="text-ff text-gray-400 float-end mt-3">استان</span>
               <select
-                {...register}
+                value={ostan}
                 onChange={handleSelectChangeostan}
                 className="select select-bordered select-xs w-5/6 ml-16 mt-2 max-w-xs text-gray-300"
               >
@@ -186,11 +196,11 @@ function Myetalat() {
             <div className="col-span-1 mr-5">
               <span className="text-ff text-gray-400 float-end mt-3">آدرس کامل پستی (میتونید از نقشه استفاده کنید)</span>
               <input
+                disabled
                 type="text"
                 {...register('addrescode')}
                 className="block input input-bordered input-xs ml-32 text-right placeholder:text-right mt-10 w-5/6"
                 placeholder="آدرس"
-                value={`${shaher}  ${ostan}`} // مقدار پیش‌فرض
               />
             </div>
           </div>
