@@ -47,7 +47,7 @@ function Myetalat() {
     setShaher(selectedShaher);
 
     // به‌روزرسانی مقدار addrescode با ترکیب استان و شهر
-    setValue('addrescode', `استان: ${ostan}  شهر: ${selectedShaher}`, { shouldValidate: true });
+    setValue('addrescode', `استان: ${ostan}  شهر:${selectedShaher}`, { shouldValidate: true });
     trigger('addrescode'); // بررسی ارور برای addrescode بعد از به‌روزرسانی
   };
 
