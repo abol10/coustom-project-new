@@ -11,20 +11,20 @@ const Navbarrej = () => {
 
   return (
     <div className="flex justify-evenly">
+     <Link 
+        to="/F" 
+        className={`grid justify-center text-primary-400 mb-5 ${location.pathname.toLowerCase() === `${"/f"}` ? 'text-red-500' : ''}`}
+      >
+        <BsShop className="ml-6" />
+        <span className="block text-ff mt-2">اطلاعات فروشگاه</span>
+      </Link>
+      <img className="w-36 h-2 mt-3 ml-10" src="img/Line 38.png" alt="خط جدا کننده" />
       <Link 
         to="/N" 
         className={`grid justify-center text-primary-400 ml-20 mb-5 ${location.pathname.toLowerCase() === `${"/n"}` ? 'text-red-500' : ''}`}
       >
         <MdOutlineDriveFolderUpload className="ml-6" />
         <span className="block text-ff mt-2">ثبت نمونه کار</span>
-      </Link>
-      <img className="w-36 h-2 mt-3 ml-10" src="img/Line 38.png" alt="خط جدا کننده" />
-      <Link 
-        to="/F" 
-        className={`grid justify-center text-primary-400 ml-20 mb-5 ${location.pathname.toLowerCase() === `${"/f"}` ? 'text-red-500' : ''}`}
-      >
-        <BsShop className="ml-6" />
-        <span className="block text-ff mt-2">اطلاعات فروشگاه</span>
       </Link>
       <img className="w-36 h-2 mt-3 ml-10" src="img/Line 38.png" alt="خط جدا کننده" />
       {/* لینک اول */}
