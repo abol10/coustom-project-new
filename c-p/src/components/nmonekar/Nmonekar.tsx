@@ -1,108 +1,109 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { FaExclamationCircle } from 'react-icons/fa';
 import Hede from '../pages1/Hehe';
 import Footer from '../pages10/footer';
 import Navbarrej from '../navbarRej/Navbar';
-import { FaCheck } from 'react-icons/fa6';
-import { FaTimes } from 'react-icons/fa';
-
-const schema = z.object({
-  image1: z
-    .instanceof(File)
-    .refine((file) => file.size > 0, {
-      message: "ارسال فایل الزامی می‌باشد",
-    })
-    .refine((file) => ['image/jpeg', 'image/png', 'image/gif'].includes(file.type), {
-      message: "فقط فایل‌های تصویری (jpg, png, gif) مجاز هستند",
-    }),
-  image2: z
-    .instanceof(File)
-    .refine((file) => file.size > 0, {
-      message: "ارسال فایل الزامی می‌باشد",
-    })
-    .refine((file) => ['image/jpeg', 'image/png', 'image/gif'].includes(file.type), {
-      message: "فقط فایل‌های تصویری (jpg, png, gif) مجاز هستند",
-    }),
-  image3: z
-    .instanceof(File)
-    .refine((file) => file.size > 0, {
-      message: "ارسال فایل الزامی می‌باشد",
-    })
-    .refine((file) => ['image/jpeg', 'image/png', 'image/gif'].includes(file.type), {
-      message: "فقط فایل‌های تصویری (jpg, png, gif) مجاز هستند",
-    }),
-});
-
-type FormData = z.infer<typeof schema>;
+import Box_Alert_nmonekar from './Box_Alert_nmonekar';
 
 function Nmonekar() {
-  const { register, handleSubmit, formState: { errors }, trigger, clearErrors } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
-
   const [fileNames, setFileNames] = useState<string[]>(['', '', '']);
   const [imagePreviews, setImagePreviews] = useState<string[]>(['', '', '']);
+  const [errors, setErrors] = useState<string[]>(['', '', '']);
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const handleFileChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const fileName = file.name;
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImagePreviews((prevPreviews) => {
-          const newPreviews = [...prevPreviews];
-          newPreviews[index] = reader.result as string; 
-          return newPreviews;
-        });
-
-        setFileNames((prevFileNames) => {
-          const newFileNames = [...prevFileNames];
-          newFileNames[index] = fileName;
-          return newFileNames;
-        });
-      
-
-        clearErrors(`image${index + 1}` as keyof FormData);
-        trigger(`image${index + 1}` as keyof FormData);
-      };
-
-      reader.readAsDataURL(file);
-    } else {
+    
+    // بررسی اینکه آیا فایل انتخاب شده یا خیر
+    if (!file) {
+      setErrors((prevErrors) => {
+        const newErrors = [...prevErrors];
+        newErrors[index] = 'وارد کردن تصویر الزامی است';
+        return newErrors;
+      });
       setImagePreviews((prevPreviews) => {
         const newPreviews = [...prevPreviews];
         newPreviews[index] = '';
         return newPreviews;
       });
+      setFileNames((prevFileNames) => {
+        const newFileNames = [...prevFileNames];
+        newFileNames[index] = '';
+        return newFileNames;
+      });
+      return;
     }
+
+    // بررسی نوع فایل
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      setErrors((prevErrors) => {
+        const newErrors = [...prevErrors];
+        newErrors[index] = 'فقط فایل‌های تصویری (jpg, png, gif) مجاز هستند';
+        return newErrors;
+      });
+      setImagePreviews((prevPreviews) => {
+        const newPreviews = [...prevPreviews];
+        newPreviews[index] = '';
+        return newPreviews;
+      });
+      setFileNames((prevFileNames) => {
+        const newFileNames = [...prevFileNames];
+        newFileNames[index] = '';
+        return newFileNames;
+      });
+      return;
+    }
+
+    // اگر فایل معتبر باشد
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreviews((prevPreviews) => {
+        const newPreviews = [...prevPreviews];
+        newPreviews[index] = reader.result as string;
+        return newPreviews;
+      });
+      setFileNames((prevFileNames) => {
+        const newFileNames = [...prevFileNames];
+        newFileNames[index] = file.name;
+        return newFileNames;
+      });
+      setErrors((prevErrors) => {
+        const newErrors = [...prevErrors];
+        newErrors[index] = ''; // پاک کردن ارور در صورت انتخاب فایل معتبر
+        return newErrors;
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
-  };
-  const [resolvedErrors, setResolvedErrors] = useState<Record<string, boolean>>({
-    image1: false,
-    image2: false,
-    image3: false,
-  });
+  const onSubmit = () => {
+    // بررسی وجود ارورها قبل از ارسال فرم
+    if (errors.some((error) => error !== '')) {
+      alert('لطفاً همه ارورها را برطرف کنید');
+      return;
+    }
 
-    useEffect(() => {
-      const interval = setInterval(() => {
-        trigger();
-        Object.entries(errors).forEach(([field, error]) => {
-          if (!error) {
-            setResolvedErrors((prevState) => ({
-              ...prevState,
-              [field]: true,
-            }));
-          }
-        });
-      }, 1000);
-  
-      return () => clearInterval(interval);
-    }, [errors, trigger]);
+    // اگر هیچ اروری وجود ندارد، عملیات با موفقیت انجام می‌شود
+    setSuccessMessage('عملیات با موفقیت به اتمام رسید');
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 3000); // نمایش پیام موفقیت به مدت 3 ثانیه
+  };
+
+  useEffect(() => {
+    // نمایش ارورها هنگام بارگذاری صفحه یا تغییر فایل‌ها
+    const hasError = errors.some((error) => error !== '');
+    if (hasError) {
+      setSuccessMessage('');
+    }
+  }, [errors]); // این اثر زمانی اجرا می‌شود که ارورها تغییر کنند
+
+  useEffect(() => {
+    // نمایش ارور اولیه به صورت پیش‌فرض برای فایل‌های خالی
+    const newErrors = ['وارد کردن تصویر الزامی است', 'وارد کردن تصویر الزامی است', 'وارد کردن تصویر الزامی است'];
+    setErrors(newErrors);
+  }, []);
 
   return (
     <>
@@ -117,35 +118,44 @@ function Nmonekar() {
           <img className="shadow-sm h-96 ml-20 w-96 mt-20" src="img/file.png" alt="" />
         </div>
 
-        <form className="col-span-3 mt-10 border border-gray-100 rounded-xl mr-10 shadow-2xl p-8" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="col-span-3 mt-10 border border-gray-100 rounded-xl mr-10 shadow-2xl p-8"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
           {/* نمایش ارورهای کلی */}
-           <div className="border border-red-500 p-4 rounded-lg mb-4">
-                     <h2 className="font-bold text-lg text-right">لیست ارورها</h2>
-                     <ul className="mt-4">
-                       {Object.entries(errors).map(([field, error]) => (
-                         <li key={field} className={`flex items-center justify-end text-ff ${resolvedErrors[field] ? 'text-green-500' : 'text-red-500 '}`}>
-                           {resolvedErrors[field] ? <FaCheck className="mr-2" /> : <FaTimes className="mr-2" />}
-                           {error?.message}
-                         </li>
-                       ))}
-                     </ul>
-           </div>
-         
+          <h2 className="font-bold text-lg text-right">لیست ارورها</h2>
+          <div className="border border-red-500 p-4 rounded-lg mb-4 mt-2">
+            {errors.some((error) => error !== '') && (
+              <ul>
+                {errors.map((error, index) => error && (
+                  <li key={index} className="flex items-center justify-end text-red-500 text-ff">
+                    <FaExclamationCircle className="mr-2" />
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {/* فرم ورودی‌ها */}
           {['فایل شماره 1', 'فایل شماره 2', 'فایل شماره 3'].map((label, index) => (
             <div key={index} className="mb-4 text-left">
               <label className="block mb-2 text-gray-500 text-sm">{label}</label>
               <div className="flex items-center space-x-4">
-                {/* دکمه انتخاب فایل به سمت راست و رنگ خاکستری کم‌رنگ */}
-                <label htmlFor={`file-input-${index}`} className="btn btn-sm btn-outline text-xs text-gray-400 hover:text-gray-600">
+                {/* دکمه انتخاب فایل */}
+                <label
+                  htmlFor={`file-input-${index}`}
+                  className="btn btn-sm btn-outline text-xs text-gray-400 hover:text-gray-600"
+                >
                   انتخاب فایل
                 </label>
                 <input
                   type="file"
                   id={`file-input-${index}`}
                   className="hidden"
-                  {...register(`image${index + 1}` as keyof FormData)} 
                   onChange={handleFileChange(index)}
                 />
 
@@ -170,6 +180,11 @@ function Nmonekar() {
             <button type="submit" className="btn btn-active btn-sm mb-2 text-xs">ثبت</button>
           </div>
         </form>
+
+        {/* نمایش پیغام موفقیت */}
+        {successMessage && (
+         <Box_Alert_nmonekar setChekednav={()=>{}} state={true} />
+        )}
       </div>
 
       <Footer />
