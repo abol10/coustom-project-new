@@ -29,7 +29,7 @@ const Box_Alert: React.FC<ChildProps> = ({ setChekednav, state }) => {
             // بعد از بسته شدن SweetAlert2
             setChekednav(false);
             if (state) {
-                navigate('/E'); // هدایت به صفحه /E در صورت true بودن state
+                navigate('/N'); // هدایت به صفحه /E در صورت true بودن state
             }
         });
     };
