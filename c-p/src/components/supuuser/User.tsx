@@ -26,10 +26,12 @@ export const handleSignUp = async (
     }
   });
 
+
   if (error) {
     return { error: error.message }; 
   }
 
   // بازگرداندن داده‌های کاربر و سشن در صورت موفقیت
-  return { user: data?.user ?? null, session: data?.session ?? null };
+  return { user: data?.user ?? null, session: data?.session ?? null};
 };
+

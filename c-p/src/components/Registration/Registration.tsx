@@ -41,7 +41,6 @@ function MyForm() {
     password: false,
     birthDate: false,
   });
-
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     // صدا زدن تابع handleSignUp برای ثبت‌نام
     const result = await handleSignUp(data.email, data.password, data.firstName, data.nationalId);
@@ -51,11 +50,13 @@ function MyForm() {
     } else {
       setChekednav(true);
       console.log("Form Data:", data);
-      
       // ریست کردن فرم بعد از ارسال موفق
       reset();
     }
+
   };
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,6 +74,7 @@ function MyForm() {
 
     return () => clearInterval(interval);
   }, [errors, trigger]);
+ 
 
   return (
     <>
@@ -209,6 +211,7 @@ function MyForm() {
       <Footer />
     </>
   );
+
 }
 
 export default MyForm;
