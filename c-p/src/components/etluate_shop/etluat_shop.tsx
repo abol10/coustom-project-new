@@ -1,82 +1,87 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, useEffect } from 'react';
+import { supabase } from '../nmonekar/uplode_img_project'; // فرض می‌کنیم که این کانفیگ Supabase است
 import Hede from '../pages1/Hehe';
 import Footer from '../pages10/footer';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { useState, useEffect } from 'react';
-import { handleSignUpNumber } from '../etlaeattnas/User_number';
 import Navbarrej from '../navbarRej/Navbar';
-import Box_Alert from '../etlaeattnas/Box_Alert';
+import Box_Alert_shop from './Box_alert_shop';
 
 // تعریف اسکیما با Zod
 const schema = z.object({
-  number: z.string()
-    .min(1, { message: "شماره تلفن الزامی است" })
-    .regex(/^09\d{9}$/, { message: "شماره باید با 09 شروع شده و شامل 11 رقم باشد" }),
-  numberMe: z.string()
-    .min(1, { message: "شماره تلفن الزامی است" })
-    .regex(/^072\d{8}$/, { message: "شماره باید با 072 شروع شده و شامل 11 رقم باشد" }),
-  codepost: z.string()
-    .length(10, { message: "کد پستی باید دقیقا 10 رقم باشد" })
-    .regex(/^\d{10}$/, { message: "کد پستی فقط باید شامل اعداد باشد" }),
-  addrescode: z.string().min(1, { message: "وارد کردن شهر الزامی هست" }),
+  name_shop: z.string().min(1, { message: "نام الزامی است" }),
+
+  Saba_code: z.string()
+    .refine((val) => val.startsWith('IR'), {
+      message: "شماره شبا با IR حروف بزرگ شروع میشود",
+    })
+    .refine((val) => val.length === 30, {
+      message: "شماره شبا باید دقیقاً ۳۰ کاراکتر باشد",
+    }),
+
+  instagram_page: z.string().optional(),
 });
 
 // تعریف نوع داده‌های فرم با استفاده از TypeScript
 type FormData = z.infer<typeof schema>;
 
-function Etluate_Shop() {
-  const { register, handleSubmit, formState: { errors }, trigger, setValue, reset } = useForm<FormData>({
+const Etluate_Shop = () => {
+  const { register, handleSubmit, formState: { errors }, trigger, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const [resolvedErrors, setResolvedErrors] = useState<Record<string, boolean>>({
-    number: false,
-    numberMe: false,
-    codepost: false,
-    addrescode: false,
+    name_shop: false,
+    Saba_code: false,
+    instagram_page: false,
   });
 
-  const [shaher, setShaher] = useState<string>('');
-  const [ostan, setOstan] = useState<string>('');
   const [chekedNext, setChekedNext] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string>(''); // برای ذخیره user_id
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedShaher = event.target.value;
-    setShaher(selectedShaher);
-
-    // به‌روزرسانی مقدار addrescode با ترکیب استان و شهر
-    setValue('addrescode', `استان: ${ostan}  شهر:${selectedShaher}`, { shouldValidate: true });
-    trigger('addrescode'); // بررسی ارور برای addrescode بعد از به‌روزرسانی
-  };
-
-  const handleSelectChangeostan = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOstan = event.target.value;
-    setOstan(selectedOstan);
-
-    // به‌روزرسانی مقدار addrescode با ترکیب استان و شهر
-    setValue('addrescode', `${shaher} ${selectedOstan}`, { shouldValidate: true });
-    trigger('addrescode'); // بررسی ارور برای addrescode بعد از به‌روزرسانی
-  };
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('خطا در دریافت اطلاعات کاربر:', error.message);
+        setUserId('anonymous');
+      } else {
+        setUserId(data.user.id || 'anonymous');
+      }
+    };
+    getUser();
+  }, []); // این استفاده از effect باعث می‌شود که بعد از بارگذاری کامپوننت، userId را دریافت کنید.
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const result = await handleSignUpNumber(data.number, data.numberMe, data.codepost, data.addrescode);
-    if (result.error) {
-      alert(result.error);
-    } else {
-      setChekedNext(true);  // پیام موفقیت
-      reset();  // پاک کردن فرم
-      // پاک کردن مقادیر `select` ها
-      setShaher('');
-      setOstan('');
+    try {
+      // ارسال داده‌ها به دیتابیس
+      const { error } = await supabase.from('shop_info').upsert([
+        {
+          name_shop: data.name_shop,
+          saba_code: data.Saba_code,
+          instagram_page: data.instagram_page || null,  // اگر پیج اینستاگرام خالی باشد، نال ارسال شود
+          user_id: userId, // ارسال userId به دیتابیس
+        },
+      ]);
+
+      if (error) {
+        throw error;  // اگر ارور باشد، پرتاب می‌شود
+      }
+
+      // موفقیت‌آمیز بودن درخواست
+      setChekedNext(true); // نمایش پیام موفقیت
+      reset(); // پاک کردن فرم
       console.log("Form Data:", data);
+    } catch (error) {
+      console.error('Error inserting data into database:', error);
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      trigger();
+      trigger(); // اعتبارسنجی مجدد
       Object.entries(errors).forEach(([field, error]) => {
         if (!error) {
           setResolvedErrors((prevState) => ({
@@ -94,14 +99,14 @@ function Etluate_Shop() {
     <>
       <Hede />
       <Navbarrej />
-      {chekedNext && <Box_Alert setChekednav={setChekedNext} state={chekedNext} />}
+      {chekedNext && <Box_Alert_shop setChekednav={setChekedNext} state={chekedNext} />}
       <div className="float-end mr-20">
         <span className="text-jigary text-base font-sans">فرم ثبت نام اطلاعات</span>
       </div>
 
       <div className="grid grid-cols-5 mt-10">
         <div className="col-span-2">
-          <img className="shadow-sm h-96 ml-20 w-96 mt-48" src="img/Group.png" alt="" />
+          <img className="shadow-sm h-56 ml-10 w-96 mt-24" src="img/shoping.png.png" alt="" />
         </div>
 
         <form className="col-span-3 mt-10 border border-gray-100 rounded-xl mr-10 shadow-2xl" onSubmit={handleSubmit(onSubmit)}>
@@ -121,72 +126,21 @@ function Etluate_Shop() {
           {/* فرم ورودی‌ها */}
           <div className="grid grid-cols-2">
             <div className="col-span-1">
-              <span className="text-ff text-gray-400 float-end mt-3">شماره تلفن (همراه با کد شهر)</span>
+              <span className="text-ff text-gray-400 float-end mt-3">پیج اینیستاگرام(اختیاری)</span>
               <input
                 type="text"
-                {...register('numberMe')}
+                {...register("instagram_page")}
                 className="block input input-bordered input-xs ml-16 text-right placeholder:text-right mt-10 w-5/6"
-                placeholder="شماره تلفن"
+                placeholder="پیج اینیستاگرام"
               />
             </div>
             <div className="col-span-1 mr-5">
-              <span className="text-ff text-gray-400 float-end mt-3">شماره موبایل</span>
+              <span className="text-ff text-gray-400 float-end mt-3">نام فروشگاه</span>
               <input
                 type="text"
-                {...register('number')}
+                {...register('name_shop')}
                 className="block input input-bordered input-xs ml-16 placeholder:text-right mt-10 w-5/6"
-                placeholder="شماره موبایل"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 mt-8">
-            <div className="col-span-1 mr-5">
-              <span className="text-ff text-gray-400 float-end mt-3">شهر</span>
-              <select
-                value={shaher}
-                onChange={handleSelectChange}
-                className="select select-bordered select-xs w-5/6 ml-20 mt-2 max-w-xs text-gray-300"
-              >
-                <option className="text-gray-300 text-right" disabled selected>
-                  شهر
-                </option>
-                <option className="text-gray-300 text-right" value="تهران">تهران</option>
-                <option className="text-gray-300 text-right" value="مشهد">مشهد</option>
-                <option className="text-gray-300 text-right" value="زاهدان">زاهدان</option>
-                <option className="text-gray-300 text-right" value="شیراز">شیراز</option>
-                <option className="text-gray-300 text-right" value="اهواز">اهواز</option>
-                <option className="text-gray-300 text-right" value="فیروزآباد">فیروزآباد</option>
-              </select>
-            </div>
-            <div className="col-span-1 mr-5">
-              <span className="text-ff text-gray-400 float-end mt-3">استان</span>
-              <select
-                value={ostan}
-                onChange={handleSelectChangeostan}
-                className="select select-bordered select-xs w-5/6 ml-16 mt-2 max-w-xs text-gray-300"
-              >
-                <option className="text-gray-300 text-right" disabled selected>
-                  استان
-                </option>
-                <option className="text-gray-300 text-right" value="تهران">تهران</option>
-                <option className="text-gray-300 text-right" value="فارس">فارس</option>
-                <option className="text-gray-300 text-right" value="خراسان">خراسان</option>
-                <option className="text-gray-300 text-right" value="خوزستان">خوزستان</option>
-                <option className="text-gray-300 text-right" value="سیستان و بلوجستان">سیستان و بلوجستان</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 mt-8">
-            <div className="col-span-1"></div>
-            <div className="col-span-1 mr-5">
-              <span className="text-ff text-gray-400 float-end mt-3">کد پستی</span>
-              <input
-                type="text"
-                {...register('codepost')}
-                className="block input input-bordered input-xs ml-16 text-right placeholder:text-right mt-10 w-5/6"
-                placeholder="کد پستی"
+                placeholder="نام فروشگاه"
               />
             </div>
           </div>
@@ -194,13 +148,12 @@ function Etluate_Shop() {
           <div className="grid grid-cols-1 mt-8">
             <div className="col-span-1"></div>
             <div className="col-span-1 mr-5">
-              <span className="text-ff text-gray-400 float-end mt-3">آدرس کامل پستی (میتونید از نقشه استفاده کنید)</span>
+              <span className="text-ff text-gray-400 float-end mt-3">شماره شبا</span>
               <input
-                disabled
                 type="text"
-                {...register('addrescode')}
+                {...register("Saba_code")}
                 className="block input input-bordered input-xs ml-32 text-right placeholder:text-right mt-10 w-5/6"
-                placeholder="آدرس"
+                placeholder="شماره شبا"
               />
             </div>
           </div>
@@ -214,9 +167,6 @@ function Etluate_Shop() {
       <Footer />
     </>
   );
-}
+};
 
 export default Etluate_Shop;
-
-
-
