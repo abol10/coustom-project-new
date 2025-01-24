@@ -10,18 +10,17 @@ function Nmonekar() {
   const [fileNames, setFileNames] = useState<string[]>(['', '', '']);
   const [imagePreviews, setImagePreviews] = useState<string[]>(['', '', '']);
   const [errors, setErrors] = useState<string[]>(['', '', '']);
-  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');  
   const [userId, setUserId] = useState<string>(''); // برای ذخیره user_id
 
-  // برای دریافت user_id از supabase.auth.getUser
   useEffect(() => {
     const getUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error('خطا در دریافت اطلاعات کاربر:', error.message);
-        setUserId('anonymous'); // در صورت نبود کاربر، مقدار anonymous را قرار می‌دهیم
+        setUserId('anonymous');
       } else {
-        setUserId(data.user.id || 'anonymous'); // دسترسی به id از data.user.id
+        setUserId(data.user.id || 'anonymous');
       }
     };
     getUser();
@@ -30,7 +29,6 @@ function Nmonekar() {
   const handleFileChange = (index: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
-    // بررسی اینکه آیا فایل انتخاب شده یا خیر
     if (!file) {
       setErrors((prevErrors) => {
         const newErrors = [...prevErrors];
@@ -50,7 +48,6 @@ function Nmonekar() {
       return;
     }
 
-    // بررسی نوع فایل
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!validTypes.includes(file.type)) {
       setErrors((prevErrors) => {
@@ -71,7 +68,6 @@ function Nmonekar() {
       return;
     }
 
-    // اگر فایل معتبر باشد
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreviews((prevPreviews) => {
@@ -86,7 +82,7 @@ function Nmonekar() {
       });
       setErrors((prevErrors) => {
         const newErrors = [...prevErrors];
-        newErrors[index] = ''; // پاک کردن ارور در صورت انتخاب فایل معتبر
+        newErrors[index] = '';
         return newErrors;
       });
     };
@@ -94,32 +90,26 @@ function Nmonekar() {
   };
 
   const onSubmit = async () => {
-    // بررسی وجود ارورها قبل از ارسال فرم
     if (errors.some((error) => error !== '')) {
       alert('لطفاً همه ارورها را برطرف کنید');
       return;
     }
 
-    // آپلود فایل‌ها به Supabase
     try {
-      // آرایه ای برای ذخیره URLها
       const imageUrls: string[] = [];
 
-      // هر فایل را آپلود و URL آن را در آرایه ذخیره می‌کنیم
       await Promise.all(
         fileNames.map(async (fileName, index) => {
           const fileInput = document.getElementById(`file-input-${index}`) as HTMLInputElement;
           const file = fileInput?.files?.[0];
           if (file) {
             const filePath = `uploads/${Date.now()}_${fileName}`;
-            const { data, error } = await supabase.storage
-              .from('img') // نام باکت خود را اینجا وارد کنید
+            const { error } = await supabase.storage
+              .from('img') 
               .upload(filePath, file);
-              console.log(data)
 
             if (error) throw error;
 
-            // دریافت URL عمومی فایل
             const { data: publicData } = await supabase.storage
               .from('img')
               .getPublicUrl(filePath);
@@ -128,18 +118,16 @@ function Nmonekar() {
               throw new Error('خطا در دریافت URL عمومی فایل');
             }
 
-            // ذخیره URL در آرایه
             imageUrls.push(publicData.publicUrl);
           }
         })
       );
 
-      // پس از دریافت URLها، آنها را در جدول ذخیره می‌کنیم
       const { error: dbError } = await supabase
         .from('user_images')
         .upsert([
           {
-            user_id: userId, // استفاده از user_id واقعی
+            user_id: userId, 
             image_url_1: imageUrls[0],
             image_url_2: imageUrls[1],
             image_url_3: imageUrls[2],
@@ -151,16 +139,16 @@ function Nmonekar() {
       setSuccessMessage('عملیات با موفقیت به اتمام رسید');
       setTimeout(() => {
         setSuccessMessage('');
-      }, 3000); // نمایش پیام موفقیت به مدت 3 ثانیه
+      }, 3000);
 
     } catch (error) {
       console.error('خطا در آپلود فایل‌ها:', error);
       alert('خطا در آپلود فایل‌ها');
+      console.log(error);
     }
   };
 
   useEffect(() => {
-    // نمایش ارورها هنگام بارگذاری صفحه یا تغییر فایل‌ها
     const hasError = errors.some((error) => error !== '');
     if (hasError) {
       setSuccessMessage('');
@@ -168,7 +156,6 @@ function Nmonekar() {
   }, [errors]);
 
   useEffect(() => {
-    // نمایش ارور اولیه به صورت پیش‌فرض برای فایل‌های خالی
     const newErrors = ['وارد کردن تصویر الزامی است', 'وارد کردن تصویر الزامی است', 'وارد کردن تصویر الزامی است'];
     setErrors(newErrors);
   }, []);
@@ -213,7 +200,6 @@ function Nmonekar() {
             <div key={index} className="mb-4 text-left">
               <label className="block mb-2 text-gray-500 text-sm">{label}</label>
               <div className="flex items-center space-x-4">
-                {/* دکمه انتخاب فایل */}
                 <label
                   htmlFor={`file-input-${index}`}
                   className="btn btn-sm btn-outline text-xs text-gray-400 hover:text-gray-600"
@@ -251,7 +237,7 @@ function Nmonekar() {
 
         {/* نمایش پیغام موفقیت */}
         {successMessage && (
-         <Box_Alert_nmonekar setChekednav={()=>{}} state={true} />
+          <Box_Alert_nmonekar setChekednav={() => {}} state={true} />
         )}
       </div>
 
