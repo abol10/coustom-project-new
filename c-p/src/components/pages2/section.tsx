@@ -16,11 +16,10 @@ const Section = () => {
             {/* <span className="absolute right-10 top-20 text-lg font-bold">
                 آنلاین شاپ کاستومی
             </span> */}
-              <ReactTyped  className="block absolute right-10 top-28 text-sm  text-opacity-40 "strings={["آنلاین شاپ کاستومی محصولات متنوعی دارد و این امکان رو بهتون میده متن هاتون رو شخصی سازی کنید"]} typeSpeed={100} />
-            {/* <span className="absolute right-10 top-28 text-sm  text-opacity-40 ">
+            <span className="absolute right-10 top-28 text-sm  text-opacity-40 ">
                 آنلاین شاپ کاستومی محصولات متنوعی داره و این
                  امکان رو بهتون میده متن هاتونو رو شخصی سازی کنید
-            </span> */}
+            </span>
         </div>
      
         </>
