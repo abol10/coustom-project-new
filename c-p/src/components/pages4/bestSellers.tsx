@@ -3,31 +3,116 @@ import { FcLike } from "react-icons/fc";
 import { FcDislike } from "react-icons/fc";
 import { useState, useEffect } from "react";
 import { useGetProductsQuery } from "../../service/Supabase";
+import supabase from "./serverLike";  // وارد کردن supabaseClient
 
 const Bestsellers = () => {
-  // ایجاد وضعیت لایک برای هر محصول
   const [likedProducts, setLikedProducts] = useState<{ [key: number]: boolean }>({});
-
+  
   const { data, isLoading } = useGetProductsQuery();
 
-  // وقتی داده‌ها بارگذاری شدند، وضعیت لایک همه‌ی محصولات را به false تغییر می‌دهیم
+  // وقتی که داده‌ها بارگذاری شدند، وضعیت لایک‌ها را از دیتابیس و یا localStorage دریافت می‌کنیم
   useEffect(() => {
-    if (data) {
-      // برای هر محصول، وضعیت لایک را به false (دیسلایک) تنظیم می‌کنیم
-      const initialLikes: { [key: number]: boolean } = {};
-      data.forEach((product) => {
-        initialLikes[product.id] = true; // همه محصولات به طور پیش‌فرض دیسلایک هستند
-      });
-      setLikedProducts(initialLikes);
-    }
+    const fetchLikes = async () => {
+      if (data) {
+        // ابتدا همه‌ی محصولات را به صورت دیسلایک در نظر می‌گیریم
+        const initialLikes: { [key: number]: boolean } = {};
+        data.forEach((product) => {
+          initialLikes[product.id] = false; // همه محصولات به طور پیش‌فرض دیسلایک هستند
+        });
+
+        // خواندن لایک‌های موجود از localStorage
+        const storedLikes = JSON.parse(localStorage.getItem('likedProducts') || '{}');
+
+        // اگر اطلاعات لایک از localStorage موجود باشد، آن را بارگذاری می‌کنیم
+        setLikedProducts((prevState) => ({
+          ...prevState,
+          ...storedLikes
+        }));
+
+        // خواندن لایک‌های موجود در دیتابیس
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        
+        if (userError || !userData?.user) {
+          console.log("User is not logged in.");
+          return;
+        }
+
+        const userId = userData.user.id; // شناسه کاربر
+
+        // خواندن لایک‌ها از دیتابیس
+        const { data: likesData, error: likesError } = await supabase
+          .from('likes')
+          .select('product_id')
+          .eq('user_id', userId);
+
+        if (likesError) {
+          console.error("Error fetching likes:", likesError);
+        } else {
+          // تغییر وضعیت لایک‌ها بر اساس داده‌های دریافتی از دیتابیس
+          likesData?.forEach((like) => {
+            initialLikes[like.product_id] = true; // اگر لایک کرده باشد، true می‌شود
+          });
+        }
+
+        // ذخیره وضعیت لایک‌ها در localStorage
+        localStorage.setItem('likedProducts', JSON.stringify(initialLikes));
+
+        // ذخیره وضعیت لایک‌ها در state
+        setLikedProducts(initialLikes);
+      }
+    };
+
+    fetchLikes();
   }, [data]);
 
-  // عملکرد تغییر وضعیت لایک
-  const handel = (id: number) => {
-    setLikedProducts((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id], // تغییر وضعیت لایک
-    }));
+  // تغییر وضعیت لایک
+  const handel = async (productId: number) => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData?.user) {
+      console.log("User is not logged in.");
+      return;
+    }
+
+    const userId = userData.user.id;  // دسترسی به شناسه کاربر
+
+    const isLiked = likedProducts[productId];
+
+    // حذف لایک اگر قبلاً لایک شده باشد
+    if (isLiked) {
+      const { error } = await supabase
+        .from('likes')
+        .delete()
+        .eq('product_id', productId)
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error("Error unliking product:", error);
+      } else {
+        console.log("Product unliked successfully");
+      }
+    } else {
+      // اضافه کردن لایک جدید
+      const { error } = await supabase
+        .from('likes')
+        .insert([{ product_id: productId, user_id: userId }]);
+
+      if (error) {
+        console.error("Error liking product:", error);
+      } else {
+        console.log("Product liked successfully");
+      }
+    }
+
+    // تغییر وضعیت لایک محصول
+    const updatedLikes = {
+      ...likedProducts,
+      [productId]: !likedProducts[productId], // تغییر وضعیت لایک
+    };
+
+    // ذخیره وضعیت لایک‌ها در state و localStorage
+    setLikedProducts(updatedLikes);
+    localStorage.setItem('likedProducts', JSON.stringify(updatedLikes));
   };
 
   if (isLoading) {
@@ -51,28 +136,26 @@ const Bestsellers = () => {
             className="text-right border-2 border-gray-300 p-3 rounded-lg hover:border-gray-900"
             key={e.id}
           >
-            {/* تصویر محصول */}
             <img
               className="w-40 h-32 object-cover mb-2 ml-auto rounded-md"
               src={e.img}
               alt={e.name}
             />
-            {/* آیکن Like/Dislike */}
+            
             <div className="grid grid-cols-2 text-right">
               {likedProducts[e.id] ? (
-                <FcDislike
-                  onClick={() => handel(e.id)}
-                  className="col-span-1 mt-2 cursor-pointer"
-                />
+                 <FcLike
+                 onClick={() => handel(e.id)}
+                 className="col-span-1 mt-2 cursor-pointer"
+               />
               ) : (
-                <FcLike
-                  onClick={() => handel(e.id)}
-                  className="col-span-1 mt-2 cursor-pointer"
-                />
+                <FcDislike
+                onClick={() => handel(e.id)}
+                className="col-span-1 mt-2 cursor-pointer"
+              />
               )}
               <span className="text-ff col-span-1">{e.name}</span>
             </div>
-            {/* توضیحات و قیمت */}
             <span className="block text-right text-ff mt-4">{e.caption}</span>
             <span className="block text-right text-sm mt-2">تومان {e.price}</span>
           </div>
