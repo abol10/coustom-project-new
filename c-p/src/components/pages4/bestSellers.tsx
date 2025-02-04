@@ -1,9 +1,10 @@
 import { GiMedallist } from "react-icons/gi";
 import { FcLike } from "react-icons/fc";
-import { FcDislike } from "react-icons/fc";
 import { useState, useEffect } from "react";
 import { useGetProductsQuery } from "../../service/Supabase";
 import supabase from "./serverLike";  // وارد کردن supabaseClient
+import { CiHeart } from "react-icons/ci";
+
 
 const Bestsellers = () => {
   const [likedProducts, setLikedProducts] = useState<{ [key: number]: boolean }>({});
@@ -149,9 +150,9 @@ const Bestsellers = () => {
                  className="col-span-1 mt-2 cursor-pointer"
                />
               ) : (
-                <FcDislike
+                <CiHeart
                 onClick={() => handel(e.id)}
-                className="col-span-1 mt-2 cursor-pointer"
+                className="col-span-1 mt-2 cursor-pointer text-base"
               />
               )}
               <span className="text-ff col-span-1">{e.name}</span>
