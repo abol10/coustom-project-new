@@ -18,13 +18,13 @@ function App() {
           {/* مسیر اصلی */}
           <Route path="/" element={<Heders />} />
           {/* مسیرهای مختلف */}
-          <Route path="/myOrder" element={<Profileme />} />
+          <Route path="/product" element={<Profileme />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/S" element={<MyForm />} />
-          <Route path="/E" element={<Myetalat />} />
-          <Route path="/N" element={<Nmonekar />} />
+          <Route path="/Register" element={<MyForm />} />
+          <Route path="/Registerphont" element={<Myetalat />} />
+          <Route path="/Informationphont" element={<Nmonekar />} />
+          <Route path="/InformationShop" element={<Etluate_Shop />} />
           <Route path="/Profile" element={<PrifilePage1 />} />
-          <Route path="/F" element={<Etluate_Shop />} />
           {/* مسیر پیش‌فرض */}
           <Route path="*" element={<Else />} />
         </Routes>
