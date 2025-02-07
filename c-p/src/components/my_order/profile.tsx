@@ -46,7 +46,7 @@ const Profileme = () => {
       { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "37", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
       { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "38", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
       { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "39", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "40", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false } 
+      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "40", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false }, 
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -108,12 +108,20 @@ const Profileme = () => {
     const matchesPrice3 = selectedprice && selectedprice === "3" 
     ? product.ghimat >= 400
     : product;  
-    // const matchesPrice = selectedprice ? (selectedprice === "1" ? parseInt(product.ghimat.replace(",", "")) < 100000 : parseInt(product.ghimat.replace(",", "")) >= 100000 && parseInt(product.ghimat.replace(",", "")) < 200000) : true;
     const matchesAvailable = StateCheck ? product.available : true;
     const matchesGraphic = StateCheckthow ? product.isGraphic : true;
     return matchesBrand && matchesCategory && matchesColor && matchesPrice1 &&matchesPrice2&&matchesPrice3  && matchesAvailable && matchesGraphic;
   });
-
+  const [previousFilteredProducts, setPreviousFilteredProducts] = useState(ProductsBestsss);
+  useEffect(() => {
+    // فقط در صورتی که filteredProducts تغییر کرده باشد، عمل تغییر را انجام می‌دهیم
+    if (JSON.stringify(filteredProducts) !== JSON.stringify(previousFilteredProducts)) {
+      setDisplayedProducts(filteredProducts.slice(0, itemsPerPage));
+      setPreviousFilteredProducts(filteredProducts); // بروزرسانی previousFilteredProducts
+    }
+  }, [filteredProducts]);// فقط زمانی که filteredProducts تغییر کند
+  
+  
   // useEffect برای بروزرسانی دکمه‌های صفحه بندی
   useEffect(() => {
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -123,7 +131,7 @@ const Profileme = () => {
     const newButtons = [];
     if (startPage > 1) {
       newButtons.push(
-        <button key="prev" onClick={() => handlePageChange(currentPage - 1)} className="px-4 py-2 mx-2 rounded bg-gray-200">قبلی</button>
+        <button key="prev" onClick={() => handlePageChange(currentPage - 5)} className="px-4 py-2 mx-2 rounded bg-gray-200">قبلی</button>
       );
     }
 
@@ -141,10 +149,14 @@ const Profileme = () => {
 
     if (endPage < totalPages) {
       newButtons.push(
-        <button key="next" onClick={() => handlePageChange(currentPage + 1)} className="px-4 py-2 mx-2 rounded bg-gray-200">بعدی</button>
+        <button key="next" onClick={() => handlePageChange(currentPage + 5)} className="px-4 py-2 mx-2 rounded bg-gray-200">بعدی</button>
       );
     }
-    setPageButtons(newButtons);
+        // **راه‌حل: فقط در صورت تغییر مقدار، state را به‌روزرسانی کن**
+        if (JSON.stringify(newButtons) !== JSON.stringify(pageButtons)) {
+          setPageButtons(newButtons);
+      }
+  
   }, [currentPage, filteredProducts]);
 
   useEffect(() => {
@@ -156,9 +168,9 @@ const Profileme = () => {
       <Hede />
       <div className="grid grid-cols-7">
         <div className="col-span-5">
-          <div className="grid grid-cols-1 justify-end sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4 mr-5 ml-10">
+          <div className="grid grid-cols-1 justify-end sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-10 mr-5 ml-10 shadow-xl">
             {displayedProducts.map((e, index) => (
-              <div className="text-right border-2 border-gray-300 p-2 rounded-lg hover:border-gray-900 w-48 h-56" key={index}>
+              <div className="text-right border-2 border-gray-300 p-2 rounded-lg hover:border-gray-900 w-48 h-56 ml-10 mb-10 opacity-95" key={index}>
                 <img className="w-full h-24 object-cover mb-2 ml-auto rounded-md" src={e.img} alt={e.name} />
                 <div className="grid grid-cols-2 text-right">
                   {iconlike ? <FcLike className="col-span-1 mt-2 cursor-pointer" /> : <FcDislike className="col-span-1 mt-2 cursor-pointer" />}
@@ -177,7 +189,7 @@ const Profileme = () => {
         </div>
 
         {/* فیلترها */}
-        <div className="col-span-2 border border-gray-500 mr-14 rounded-lg">
+        <div className="col-span-2 shadow-md mr-14 mt-8 rounded-lg">
           <div className="flex justify-between items-center">
             <button onClick={handleReset} className="text-xs text-primary-800 ml-2">حذف فیلتر ها</button>
             <span className="mr-2">فیلترها</span>
