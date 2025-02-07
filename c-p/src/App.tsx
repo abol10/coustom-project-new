@@ -9,6 +9,7 @@ import Myetalat from './components/etlaeattnas/Etlauat';
 import Nmonekar from './components/nmonekar/Nmonekar';
 import Etluate_Shop from './components/etluate_shop/etluat_shop';
 import PrifilePage1 from './components/ProfilePage/Profilepage1';
+import ProfilePage2 from './components/profilePage2/Profilepage2';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Informationphont" element={<Nmonekar />} />
           <Route path="/InformationShop" element={<Etluate_Shop />} />
           <Route path="/Profile" element={<PrifilePage1 />} />
+          <Route path="/ProfileAll" element={<ProfilePage2 />} />
           {/* مسیر پیش‌فرض */}
           <Route path="*" element={<Else />} />
         </Routes>
