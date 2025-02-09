@@ -30,7 +30,6 @@ const Bestsellers = () => {
           ...storedLikes
         }));
 
-        // خواندن لایک‌های موجود در دیتابیس
         const { data: userData, error: userError } = await supabase.auth.getUser();
         
         if (userError || !userData?.user) {
@@ -69,52 +68,66 @@ const Bestsellers = () => {
   // تغییر وضعیت لایک
   const handel = async (productId: number) => {
     const { data: userData, error: userError } = await supabase.auth.getUser();
-
+  
     if (userError || !userData?.user) {
       console.log("User is not logged in.");
       return;
     }
-
-    const userId = userData.user.id;  // دسترسی به شناسه کاربر
-
+  
+    const userId = userData.user.id;
     const isLiked = likedProducts[productId];
-
-    // حذف لایک اگر قبلاً لایک شده باشد
+  
+    const product = data?.find((e) => e.id === productId); // پیدا کردن محصول بر اساس productId
+    if (!product) return; // اگر محصول پیدا نشد، ادامه نمی‌دهیم
+  
+    const { name, caption, price, img } = product;  // اضافه کردن img برای ذخیره تصویر
+  
+    // حذف کاما از قیمت و تبدیل به عدد
+  
+    // اگر قبلاً لایک شده باشد، دیسلایک می‌شود
     if (isLiked) {
       const { error } = await supabase
         .from('likes')
         .delete()
         .eq('product_id', productId)
         .eq('user_id', userId);
-
+  
       if (error) {
         console.error("Error unliking product:", error);
       } else {
         console.log("Product unliked successfully");
       }
     } else {
-      // اضافه کردن لایک جدید
+      // اگر لایک نشده باشد، لایک جدید اضافه می‌شود
       const { error } = await supabase
         .from('likes')
-        .insert([{ product_id: productId, user_id: userId }]);
-
+        .insert([{
+          product_id: productId,
+          user_id: userId,
+          product_name: name,
+          product_caption: caption,
+          product_price: price,  // استفاده از price عددی
+          product_img: img  // ذخیره تصویر محصول
+        }]);
+  
       if (error) {
         console.error("Error liking product:", error);
       } else {
         console.log("Product liked successfully");
       }
     }
-
-    // تغییر وضعیت لایک محصول
+  
+    // به‌روزرسانی وضعیت لایک در state و localStorage
     const updatedLikes = {
       ...likedProducts,
-      [productId]: !likedProducts[productId], // تغییر وضعیت لایک
+      [productId]: !likedProducts[productId],
     };
-
-    // ذخیره وضعیت لایک‌ها در state و localStorage
+  
     setLikedProducts(updatedLikes);
     localStorage.setItem('likedProducts', JSON.stringify(updatedLikes));
   };
+  
+  
 
   if (isLoading) {
     return <div>Loading...</div>;

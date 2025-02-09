@@ -1,556 +1,23 @@
 import Hede from "../pages1/Hehe";
 import Footer from "../pages10/footer";
-import { useEffect, useState } from "react";
 import ProfileSetting from "../ProfileSetting";
+import { FaRegComments } from "react-icons/fa6";
+import { IoEllipsisHorizontalCircle } from "react-icons/io5";
+import { PiCheckCircleLight } from "react-icons/pi";
+import { LiaTimesCircleSolid } from "react-icons/lia";
+import { CiImageOn } from "react-icons/ci";
+import { RiShoppingBag4Line } from "react-icons/ri";
+import ProductLike from "../ProductLike/ProductLike";
+
+
+
+
 
 
 
 
 
 const ProfilePage2 = () => {
-    
-    const ProductsBest = [
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: "1"
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '2'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '3'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '4'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '5'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '6'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '7'
-        },
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '8'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '8'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '8'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '8'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '8'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-        ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }  ,
-        {
-            img: '/img/ss.png',
-            name: 'موبایل',
-            caption: 'دارای رنگ بندی قابل طراحی',
-            ghimat: '150,000 تومان',
-            like: false,
-            id: '9'
-        }
-    ];
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
-    const [displayedProducts, setDisplayedProducts] = useState(ProductsBest.slice(0, itemsPerPage));
-    const [pageButtons, setPageButtons] = useState<JSX.Element[]>([]);
-
-        const handlePageChange = (page: number) => {
-            setCurrentPage(page);
-            const startIndex = (page - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            setDisplayedProducts(ProductsBest.slice(startIndex, endIndex));
-          };
-        
-
-        useEffect(() => {
-            const totalPages = Math.ceil(ProductsBest.length / itemsPerPage);
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, currentPage + 2);
-            
-            const newButtons = [];
-        
-            if (startPage > 1) {
-                newButtons.push(
-                    <button key="prev" onClick={() => handlePageChange(currentPage - 5)} className="px-4 py-2 mx-2 rounded bg-gray-200">
-                        قبلی
-                    </button>
-                );
-            }
-        
-            for (let i = startPage; i <= endPage; i++) {
-                newButtons.push(
-                    <button 
-                        key={i} 
-                        className={`px-4 py-2 mx-2 rounded ${currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-200'}`} 
-                        onClick={() => handlePageChange(i)}
-                    >
-                        {i}
-                    </button>
-                );
-            }
-        
-            if (endPage < totalPages) {
-                newButtons.push(
-                    <button key="next" onClick={() => handlePageChange(currentPage + 5)} className="px-4 py-2 mx-2 rounded bg-gray-200">
-                        بعدی
-                    </button>
-                );
-            }
-        
-            // **راه‌حل: فقط در صورت تغییر مقدار، state را به‌روزرسانی کن**
-            if (JSON.stringify(newButtons) !== JSON.stringify(pageButtons)) {
-                setPageButtons(newButtons);
-            }
-        
-        }, [currentPage, ProductsBest]);
     return ( 
         <div>
             <Hede />
@@ -558,27 +25,74 @@ const ProfilePage2 = () => {
               {/* گرید کردن  */}
             <div className="grid grid-cols-6">
                 <div className=" col-span-4  mx-10 rounded-lg shadow-xl">
-                  <span className="flex justify-end  mt-2 mr-5 font-semibold text-base">خرید های پر تکرار من</span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mx-6 mb-10">
-                 {displayedProducts.map((product,index) => (
-                 <div key={product.id + "_" + index} className="border p-4 rounded-xl h-64 w-52 mt-5 mb-2">
-                   <img src={product.img} alt={product.name} className="w-full h-32 object-cover mb-2" />
-                 <h3 className="text-center">{product.name}</h3>
-                <p className="text-center">{product.caption}</p>
-                 <p className="text-center">{product.ghimat}</p>
-                  </div>
-                ))}
+                  <span className="flex justify-end  mt-2 mr-5 font-semibold text-xl">سفارشات من</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mx-6 mb-10 mt-3">
+       {/* 1 */}
+               <div className="col-span-1 ml-24 border-r border-gray-300 pr-4"> {/* اضافه کردن خط عمودی در بین */}
+                 <div>
+                <div className="flex">
+                   <span className="text-base">10 محصول</span>
+                <CiImageOn className="text-jigary ml-0.5 mt-1.5"/>
+         </div>
+                  <span className="text-ff mb-10 ml-5">درگالری</span>
+                </div>
+                <div className="mt-5">
+                     <div className="flex">
+                   <span className="block text-base">28محصول</span>
+                        <RiShoppingBag4Line className="text-jigary ml-1 mt-1.5" />
                  </div>
+                  <span className="text-ff mb-10 ml-5">فیزیکی</span>
+           </div>
+        </div>
+
+      {/* 2 */}
+      <div className="col-span-1 ml-24 border-r border-gray-300 pr-4"> {/* اضافه کردن خط عمودی در بین */}
+            <div>
+                   <div className="flex">
+                   <span className="text-base">۴۵ سفارش</span>
+               <PiCheckCircleLight className="text-jigary ml-1 mt-1.5" />
+                                </div>
+                  <span className="text-ff mb-10 ml-3">ارسال شده</span>
+                </div>
+                <div className="mt-5">
+                  <div className="flex">
+                    <span className="block text-sm">215 سفارش</span>
+                    <LiaTimesCircleSolid className="text-jigary ml-1 mt-1.5" />
+                  </div>
+                  <span className="text-ff mb-10 mr-1 ml-4">لغو شده</span>
+                </div>
+              </div>
+            
+              {/* 3 */}
+              <div className="col-span-1 ml-24">
+                <div className="">
+                  <div className="flex">
+                    <span className="text-base">۴۵ سفارش</span>
+                    <IoEllipsisHorizontalCircle className="text-jigary ml-1 mt-1.5" />
+                  </div>
+                  <span className="text-ff mb-10 ml-5">جاری</span>
+                </div>
+                <div className="mt-5 ml-5">
+                  <div className="flex">
+                    <span className="block text-base">54 نظر</span>
+                    <FaRegComments className="text-jigary ml-1 mt-1.5" />
+                     </div>
+                  <span className="text-ff mb-10 mr-1">ثبت شده</span>
+                </div>
+              </div>
+            </div> 
+            {/* اتمام */}
+            <span className="flex justify-end mr-4 mb-8 font-semibold text-xl">علاقه مندی ها</span>
+          <div className="mx-10" dir="rtl">
+            <ProductLike />
+          </div>
+
                 </div> 
                {/* profileSetting */}
                <div className="col-span-2">
                 <ProfileSetting />
                </div>
             </div>
-           {/* Pagination */}
-          <div className="flex justify-center mt-5 mr-96">
-          {pageButtons}
-          </div>
             <Footer />
         </div>
      );
@@ -587,3 +101,32 @@ const ProfilePage2 = () => {
 export default ProfilePage2;
 
 
+
+
+
+
+
+
+
+
+
+    // const ProductsBest = [
+    //     {
+    //         nazsr: '/img/ss.png',
+    //         sfarsh: 'موبایل',
+    //         caption: 'دارای رنگ بندی قابل طراحی',
+    //         ghimat: '150,000 تومان',
+    //         like: false,
+    //         id: "1"
+    //     }
+
+    // ];
+
+ {/* {ProductsBest.map((product,index) => (
+                 <div key={product.id + "_" + index} className="border p-4 rounded-xl h-64 w-52 mt-5 mb-2">
+                   <img src={product.img} alt={product.name} className="w-full h-32 object-cover mb-2" />
+                 <h3 className="text-center">{product.name}</h3>
+                <p className="text-center">{product.caption}</p>
+                 <p className="text-center">{product.ghimat}</p>
+                  </div>
+                ))} */}

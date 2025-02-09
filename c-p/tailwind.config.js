@@ -28,6 +28,9 @@ export default {
         'primary-1200':'#21090C',
         'primary-1300':'#110506',
         'primary-1400':'#000000',
+      },
+      direction: {
+        rt: 'rtl',
       }
     },
     fontSize: {
