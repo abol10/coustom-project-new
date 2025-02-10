@@ -8,6 +8,7 @@ import { CiHeart } from "react-icons/ci";
 
 const Bestsellers = () => {
   const [likedProducts, setLikedProducts] = useState<{ [key: number]: boolean }>({});
+  const [lodinglike, setloding] = useState<boolean>();
   
   const { data, isLoading } = useGetProductsQuery();
 
@@ -67,6 +68,8 @@ const Bestsellers = () => {
 
   // تغییر وضعیت لایک
   const handel = async (productId: number) => {
+    if(lodinglike)return;
+    setloding(true);
     const { data: userData, error: userError } = await supabase.auth.getUser();
   
     if (userError || !userData?.user) {
@@ -125,6 +128,7 @@ const Bestsellers = () => {
   
     setLikedProducts(updatedLikes);
     localStorage.setItem('likedProducts', JSON.stringify(updatedLikes));
+    setTimeout(() => setloding(false), 1000);
   };
   
   
