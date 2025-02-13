@@ -8,7 +8,13 @@ interface Product {
   price: number;
   img: string;
   caption: string;
-  like:boolean;
+  material:string;
+  search_terms:string;
+  size:string;
+  color:string;
+  height:string;
+  available:boolean;
+  isGraphic:boolean;
 }
 
 // کلید Supabase

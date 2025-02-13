@@ -6,38 +6,56 @@ import { CiHeart } from "react-icons/ci";
 import { Swiper, SwiperSlide } from "swiper/react";
 import 'swiper/css';
 import 'swiper/css/scrollbar';
+import { useNavigate } from "react-router-dom";
 
 const ProductLike = () => {
   const [likedProducts, setLikedProducts] = useState<{ [key: number]: boolean }>({});
+  const [user, setUser] = useState<any>(null); // نگهداری وضعیت ورود کاربر
   const { data, isLoading } = useGetLikesQuery();
+  const changepage = useNavigate();
 
   useEffect(() => {
-    if (data) {
+    // بررسی وضعیت ورود کاربر
+    const fetchUser = async () => {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData?.user) {
+        setUser(null); // اگر کاربر وارد نشده باشد
+      } else {
+        setUser(userData.user); // اگر کاربر وارد شده باشد، ذخیره کردن اطلاعات کاربر
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (user && data) {
       const initialLikes: { [key: number]: boolean } = {};
-      data.forEach((like) => {
+      
+      // لایک‌های مربوط به کاربر را از پایگاه داده بارگذاری می‌کنیم
+      const userLikes = data.filter((like) => like.user_id === user.id);
+      userLikes.forEach((like) => {
         initialLikes[like.product_id] = true;
       });
 
-      localStorage.setItem('likedProducts', JSON.stringify(initialLikes));
       setLikedProducts(initialLikes);
     }
-  }, [data]);
+  }, [data, user]);
 
   const handleLike = async (productId: number) => {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !userData?.user) {
+    if (!user) {
       console.log("User is not logged in.");
       return;
     }
 
-    const userId = userData.user.id;
+    const userId = user.id;
     const isLiked = likedProducts[productId];
 
     const product = data?.find((e) => e.product_id === productId);
     if (!product) return;
 
     if (isLiked) {
+      // اگر قبلاً لایک کرده، لایک را حذف می‌کنیم
       const { error } = await supabase
         .from('likes')
         .delete()
@@ -55,38 +73,48 @@ const ProductLike = () => {
         delete updatedLikes[productId];
         return updatedLikes;
       });
+    } else {
+      // اگر لایک نکرده، لایک جدید را اضافه می‌کنیم
+      const { error } = await supabase
+        .from('likes')
+        .insert([{ product_id: productId, user_id: userId }]);
 
-      localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+      if (error) {
+        console.error("Error liking product:", error);
+      } else {
+        console.log("Product liked successfully");
+      }
+
+      setLikedProducts((prevState) => ({
+        ...prevState,
+        [productId]: true,
+      }));
     }
-
-    const updatedLikes = {
-      ...likedProducts,
-      [productId]: !likedProducts[productId],
-    };
-
-    setLikedProducts(updatedLikes);
-    localStorage.setItem('likedProducts', JSON.stringify(updatedLikes));
   };
 
   const filteredData = data?.filter((product) => likedProducts[product.product_id]);
 
-  
   if (isLoading) {
     return <div className="animate-pulse flex justify-center">
-            <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
-           
-            </div>
-            <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
-           
-           </div>
-           <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
-           
-           </div>
-           <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
-           
-           </div>
-  
+      <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
+      </div>
+      <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
+      </div>
+      <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
+      </div>
+      <div className="animate-pulse h-[240px] w-[180px] bg-gray-300 rounded-xl mx-2">
+      </div>
     </div>;
+  }
+
+  // اگر کاربر وارد حساب کاربری نشده باشد، هیچ محصولی نمایش داده نمی‌شود
+  if (!user) {
+    return (
+      <div className="h-screen">
+        <div className="text-center text-red-500 text-ff">برای اینکه بتونین این بخش رو مشاهده کنین باید وارد اکانت خود شوید درحال حاضر اکانتی ندارین</div>
+        <button className="block btn bg-jigary text-white btn-sm  text-ff mr-64 mt-10 hover:text-jigary" onClick={() => changepage('/login')}>ورود به اکانت</button>
+      </div>
+    );
   }
 
   return (
@@ -94,7 +122,6 @@ const ProductLike = () => {
       <Swiper
         spaceBetween={15}
         slidesPerView={4}
-        // dir="rtl"
         breakpoints={{
           320: {
             slidesPerView: 1, // نمایش یک محصول برای موبایل

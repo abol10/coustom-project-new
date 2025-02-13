@@ -10,6 +10,8 @@ import Nmonekar from './components/nmonekar/Nmonekar';
 import Etluate_Shop from './components/etluate_shop/etluat_shop';
 import PrifilePage1 from './components/ProfilePage/Profilepage1';
 import ProfilePage2 from './components/profilePage2/Profilepage2';
+import Transaction from './components/transaction/Transaction';
+import ProductDetailPage from './components/ProductDetailPage/ProductDetailPage';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path="/InformationShop" element={<Etluate_Shop />} />
           <Route path="/Profile" element={<PrifilePage1 />} />
           <Route path="/ProfileAll" element={<ProfilePage2 />} />
+          <Route path="/Orders" element={<Transaction />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
           {/* مسیر پیش‌فرض */}
           <Route path="*" element={<Else />} />
         </Routes>

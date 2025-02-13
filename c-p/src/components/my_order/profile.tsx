@@ -1,64 +1,26 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Aos from 'aos';
 import Hede from "../pages1/Hehe";
 import Footer from "../pages10/footer";
 import { FcLike } from "react-icons/fc";
 import { FcDislike } from "react-icons/fc";
+import { useGetProductsQuery } from "../../service/Supabase";
+import { Link } from "react-router-dom";
 
 const Profileme = () => {
-  const ProductsBestsss = [
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 1003, like: false, id: "1", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat:993, like: false, id: "2", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "3", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "6", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "5", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "7", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "8", brand: 'اسپورت', category: 'ورزشی', color: 'آبی', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "4", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "9", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "10", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "11", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "12", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "13", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "14", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "15", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "16", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "17", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "18", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "19", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "20", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "21", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "22", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "23", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "24", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "25", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "26", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "27", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "28", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "29", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "30", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "31", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "32", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "33", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "34", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "35", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 150, like: false, id: "36", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "37", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "38", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "39", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false },
-      { img: '/img/ss.png', name: 'موبایل', caption: 'دارای رنگ بندی قابل طراحی', ghimat: 15, like: false, id: "40", brand: 'اسپورت', category: 'ورزشی', color: 'قرمز', available: true, isGraphic: false }, 
-  ];
+    const MyContext = createContext([]);
+  const { data, isLoading } = useGetProductsQuery();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
-  const [displayedProducts, setDisplayedProducts] = useState(ProductsBestsss.slice(0, itemsPerPage));
+  const [displayedProducts, setDisplayedProducts] = useState(data?.slice(0, itemsPerPage));
   const [pageButtons, setPageButtons] = useState<JSX.Element[]>([]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    setDisplayedProducts(filteredProducts.slice(startIndex, endIndex));
+    setDisplayedProducts(filteredProducts?.slice(startIndex, endIndex));
   };
 
   const [iconlike] = useState(false);
@@ -95,28 +57,35 @@ const Profileme = () => {
     setStateCheck(false);
     setStateCheckthow(false);
   };
+  // const filterproduct=(id:number)=>{
+  //    data?.map(e=>{
+  //     if(id==e.id){
+  //       return console.log(e.img)
+  //     }
+  //    })
+  // }
 
   // فیلتر محصولات بر اساس انتخاب‌های کاربر
-  const filteredProducts = ProductsBestsss.filter(product => {
-    const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+  const filteredProducts = data?.filter(product => {
+    const matchesBrand = selectedBrand ? product.material === selectedBrand : true;
+    const matchesCategory = selectedCategory ? product.size === selectedCategory : true;
     const matchesColor = selectedColor ? product.color === selectedColor : true;
-    const matchesPrice1 = selectedprice&&selectedprice==="1"?product.ghimat<=100:product
+    const matchesPrice1 = selectedprice&&selectedprice==="1"?product.price<=100:product
     const matchesPrice2 = selectedprice && selectedprice === "2" 
-    ? product.ghimat >= 100 && product.ghimat <= 200 
+    ? product.price >= 100 && product.price <= 200 
     : product;  
     const matchesPrice3 = selectedprice && selectedprice === "3" 
-    ? product.ghimat >= 400
+    ? product.price >= 300
     : product;  
     const matchesAvailable = StateCheck ? product.available : true;
     const matchesGraphic = StateCheckthow ? product.isGraphic : true;
     return matchesBrand && matchesCategory && matchesColor && matchesPrice1 &&matchesPrice2&&matchesPrice3  && matchesAvailable && matchesGraphic;
-  });
-  const [previousFilteredProducts, setPreviousFilteredProducts] = useState(ProductsBestsss);
+  })||[];
+  const [previousFilteredProducts, setPreviousFilteredProducts] = useState(data);
   useEffect(() => {
     // فقط در صورتی که filteredProducts تغییر کرده باشد، عمل تغییر را انجام می‌دهیم
     if (JSON.stringify(filteredProducts) !== JSON.stringify(previousFilteredProducts)) {
-      setDisplayedProducts(filteredProducts.slice(0, itemsPerPage));
+      setDisplayedProducts(filteredProducts?.slice(0, itemsPerPage));
       setPreviousFilteredProducts(filteredProducts); // بروزرسانی previousFilteredProducts
     }
   }, [filteredProducts]);// فقط زمانی که filteredProducts تغییر کند
@@ -124,7 +93,7 @@ const Profileme = () => {
   
   // useEffect برای بروزرسانی دکمه‌های صفحه بندی
   useEffect(() => {
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredProducts?.length / itemsPerPage);
     const startPage = Math.max(1, currentPage - 2);
     const endPage = Math.min(totalPages, currentPage + 2);
 
@@ -158,27 +127,27 @@ const Profileme = () => {
       }
   
   }, [currentPage, filteredProducts]);
-
+ 
   useEffect(() => {
     Aos.init({ duration: 1000, easing: "ease-in-out" });
   }, []);
-
+ if (isLoading){return   <div className='mt-96 loader'></div>}
   return (
-    <div>
+    <MyContext.Provider value={[]}>
       <Hede />
       <div className="grid grid-cols-7">
         <div className="col-span-5">
           <div className="grid grid-cols-1 justify-end sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-10 mr-5 ml-10 shadow-xl">
-            {displayedProducts.map((e, index) => (
-              <div className="text-right border-2 border-gray-300 p-2 rounded-lg hover:border-gray-900 w-48 h-56 ml-10 mb-10 opacity-95" key={index}>
+            {displayedProducts?.map((e, index) => (
+              <Link to={`/product/${e.id}`} className="text-right border-2 border-gray-300 p-2 rounded-lg hover:border-gray-900 w-48 h-56 ml-10 mb-10 opacity-95 cursor-pointer" key={index}>
                 <img className="w-full h-24 object-cover mb-2 ml-auto rounded-md" src={e.img} alt={e.name} />
                 <div className="grid grid-cols-2 text-right">
                   {iconlike ? <FcLike className="col-span-1 mt-2 cursor-pointer" /> : <FcDislike className="col-span-1 mt-2 cursor-pointer" />}
                   <span className="text-xs col-span-1">{e.name}</span>
                 </div>
                 <span className="block text-right text-xs mt-2">{e.caption}</span>
-                <span className="block text-right text-sm mt-3">{e.ghimat} تومان</span>
-              </div>
+                <span className="block text-right text-sm mt-3">{e.price} تومان</span>
+              </Link>
             ))}
           </div>
 
@@ -234,7 +203,7 @@ const Profileme = () => {
             </label>
           </div>
 
-          <select value={selectedprice} onChange={handlepriceChange} className="float-right select text-right select-xs w-4/5 mr-3 rounded-md mt-8">
+          <select value={selectedprice} onChange={handlepriceChange} className="float-right select text-right select-xs w-4/5 mr-3 rounded-md mt-8 mb-10">
             <option disabled value="">رنج قیمت</option>
             <option value="1">کمتر از {100} هزار</option>
             <option value="2">بین {200} هزار تا {100} هزار</option>
@@ -245,7 +214,7 @@ const Profileme = () => {
       </div>
 
       <Footer />
-    </div>
+    </MyContext.Provider>
   );
 };
 

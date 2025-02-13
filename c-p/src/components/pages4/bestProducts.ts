@@ -3,6 +3,6 @@ export type productbestSellers={
     name:string,
     caption:string,
     ghimat:string,
-    like:boolean,
-    id:string
+    id:string,
+
 }
