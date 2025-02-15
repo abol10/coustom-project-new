@@ -4,6 +4,7 @@ import moment from 'moment-jalaali';
 import { MdDeleteForever } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 
+
 interface Comment {
   id: number;
   product_id: number;
@@ -19,6 +20,7 @@ const Comments = ({ productId }: { productId: number }) => {
   const [loading, setLoading] = useState<boolean>(true);  // وضعیت بارگذاری
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedCommentText, setEditedCommentText] = useState<string>('');
+  const [star, setstar] = useState<number>(0);
 
   // بارگذاری اطلاعات کاربر و بررسی وضعیت ورود
   useEffect(() => {
@@ -58,22 +60,33 @@ const Comments = ({ productId }: { productId: number }) => {
   }, [productId]);
 
   // ارسال کامنت
-  const handleAddComment = async () => {
+// ارسال کامنت همراه با امتیاز
+const handleAddComment = async () => {
     if (newComment.trim() === '') return;
     if (!user) return; // اگر کاربر وارد نشده باشد، کامنت ارسال نمی‌شود
-
-    const { data, error } = await supabase
+  
+    const { error } = await supabase
       .from('comments')
-      .insert([{ product_id: productId, comment_text: newComment, user_id: user.id }])
+      .insert([
+        { 
+          product_id: productId, 
+          comment_text: newComment, 
+          user_id: user.id, 
+          star: star  // ارسال امتیاز ستاره‌ای
+        }
+      ])
       .single();
-
+  
     if (error) {
       console.error('Error adding comment:', error);
     } else {
       fetchComments(); // بارگذاری دوباره کامنت‌ها بعد از ارسال کامنت جدید
-      setNewComment('');
+      setNewComment(''); // پاک کردن فیلد کامنت
+      setstar(0); // ریست کردن امتیاز به ۰ یا ۱
     }
   };
+  
+  
 
   // حذف کامنت
   const handleDeleteComment = async (commentId: number) => {
@@ -114,13 +127,59 @@ const Comments = ({ productId }: { productId: number }) => {
 
   // بررسی وضعیت بارگذاری و نمایش اطلاعات
   if (loading) {
-    return <div>در حال بارگذاری...</div>;
+    return <div className='mt-96 loader'></div>;
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+  <div className="rating">
+    <input 
+      type="radio" 
+      name="rating-10" 
+      className="rating-hidden" 
+      checked={star === 0} // برای ریست کردن حالت
+      onChange={() => setstar(0)} 
+    />
+    <input 
+      type="radio" 
+      name="rating-2" 
+      className="mask mask-star-2 bg-orange-400" 
+      checked={star === 1} 
+      onChange={() => setstar(1)} 
+    />
+    <input 
+      type="radio" 
+      name="rating-2" 
+      className="mask mask-star-2 bg-orange-400" 
+      checked={star === 2} 
+      onChange={() => setstar(2)} 
+    />
+    <input 
+      type="radio" 
+      name="rating-2" 
+      className="mask mask-star-2 bg-orange-400" 
+      checked={star === 3} 
+      onChange={() => setstar(3)} 
+    />
+    <input 
+      type="radio" 
+      name="rating-2" 
+      className="mask mask-star-2 bg-orange-400" 
+      checked={star === 4} 
+      onChange={() => setstar(4)} 
+    />
+    <input 
+      type="radio" 
+      name="rating-2" 
+      className="mask mask-star-2 bg-orange-400" 
+      checked={star === 5} 
+      onChange={() => setstar(5)} 
+    />
+  </div>
+</div>
+
       <h2 className="text-2xl font-bold mb-4">کامنت‌ها</h2>
-      
       <div className="space-y-4">
         {comments?.map((comment) =>
           comment?.comment_text ? (

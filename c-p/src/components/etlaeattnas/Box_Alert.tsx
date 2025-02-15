@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "tailwindcss/tailwind.css";  // اطمینان از اینکه Tailwind در پروژه بارگذاری شده است
 
+
 interface ChildProps {
     setChekednav: React.Dispatch<React.SetStateAction<boolean>>;
     state: boolean;
