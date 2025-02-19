@@ -1,20 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { supabaseApi } from './service/Supabase';
-import { supabaseLikesApi } from './components/ProductLike/ServerLikeProduct'; // import API جدید لایک‌ها
-import { supabaseProfileApi } from './components/datebiseserverProfiledate'; // import API پروفایل
+import { supabaseLikesApi } from './components/ProductLike/ServerLikeProduct'; 
+import { supabaseProfileApi } from './components/datebiseserverProfiledate'; 
+import cartReducer from './components/kamz';  // ریداکسر سبد خرید
+
 
 const store = configureStore({
   reducer: {
-    // اتصال API‌ها به store
     [supabaseApi.reducerPath]: supabaseApi.reducer,
-    [supabaseLikesApi.reducerPath]: supabaseLikesApi.reducer, // اضافه کردن reducer لایک‌ها
-    [supabaseProfileApi.reducerPath]: supabaseProfileApi.reducer, // اصلاح اشتباه و اضافه کردن reducer پروفایل
+    [supabaseLikesApi.reducerPath]: supabaseLikesApi.reducer,
+    [supabaseProfileApi.reducerPath]: supabaseProfileApi.reducer,
+    cart: cartReducer,  // ریداکسر سبد خرید
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(supabaseApi.middleware) // middleware برای supabaseApi
-      .concat(supabaseLikesApi.middleware) // middleware برای supabaseLikesApi
-      .concat(supabaseProfileApi.middleware), // اضافه کردن middleware برای supabaseProfileApi
+      .concat(supabaseApi.middleware)
+      .concat(supabaseLikesApi.middleware)
+      .concat(supabaseProfileApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

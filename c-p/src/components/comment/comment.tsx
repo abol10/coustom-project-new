@@ -3,6 +3,7 @@ import { supabase } from '../Login/serverLogin';
 import moment from 'moment-jalaali';
 import { MdDeleteForever } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import { showError } from './alert-comment';
 
 
 interface Comment {
@@ -11,6 +12,8 @@ interface Comment {
   comment_text: string | null;
   created_at: string;
   user_id: string;
+  star:number,
+  name:string
 }
 
 const Comments = ({ productId }: { productId: number }) => {
@@ -21,7 +24,7 @@ const Comments = ({ productId }: { productId: number }) => {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedCommentText, setEditedCommentText] = useState<string>('');
   const [star, setstar] = useState<number>(0);
-
+ 
   // بارگذاری اطلاعات کاربر و بررسی وضعیت ورود
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,6 +32,7 @@ const Comments = ({ productId }: { productId: number }) => {
       setUser(user);
       setLoading(false);  // بعد از دریافت اطلاعات کاربر، بارگذاری تمام می‌شود
     };
+
 
     // اگر کاربر وارد نشده باشد، در هنگام تغییر وضعیت ورود/خروج هم وضعیت کاربر رو بررسی می‌کنیم
     supabase.auth.onAuthStateChange(async (event, session) => {
@@ -43,17 +47,18 @@ const Comments = ({ productId }: { productId: number }) => {
   const fetchComments = async () => {
     const { data, error } = await supabase
       .from('comments')
-      .select('*')
+      .select('*') // الان فیلد name رو هم دریافت می‌کنه
       .eq('product_id', productId)
       .order('created_at', { ascending: false });
-
+  
     if (error) {
       console.error('Error fetching comments:', error);
-    } else {
-      const validComments = data?.filter((comment) => comment?.comment_text !== null) || [];
-      setComments(validComments);
+      return;
     }
+  
+    setComments(data); // ذخیره کامنت‌ها همراه با `name`
   };
+  
 
   useEffect(() => {
     fetchComments();
@@ -62,31 +67,44 @@ const Comments = ({ productId }: { productId: number }) => {
   // ارسال کامنت
 // ارسال کامنت همراه با امتیاز
 const handleAddComment = async () => {
-    if (newComment.trim() === '') return;
-    if (!user) return; // اگر کاربر وارد نشده باشد، کامنت ارسال نمی‌شود
+  if (newComment.trim() === '') return showError('متنی را برای ارسال کامنت بنویسید');
+  if (!user) return showError('برای ارسال کامنت باید وارد شوید');
+  if (star === 0) return showError('برای ارسال نظر باید حداقل یک ستاره انتخاب کنید');
+
+  // گرفتن اطلاعات کاربر از Supabase Auth
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError || !userData?.user) {
+    console.error('Error fetching user:', userError);
+    return showError('خطا در دریافت اطلاعات کاربر');
+  }
+
+  const userName = userData.user.user_metadata?.first_name || 'کاربر ناشناس';
+
+  // ارسال کامنت به دیتابیس
+  const { error } = await supabase
+    .from('comments')
+    .insert([
+      { 
+        product_id: productId, 
+        comment_text: newComment, 
+        user_id: user.id, 
+        star: star,
+        name: userName // ذخیره نام کاربر
+      }
+    ]);
+
+  if (error) {
+    console.error('Error adding comment:', error);
+    return showError('خطا در ارسال کامنت');
+  }
+
+  fetchComments(); // دریافت مجدد کامنت‌ها بعد از ارسال
+  setNewComment(''); // پاک کردن فیلد کامنت
+  setstar(0); // ریست کردن امتیاز
+};
+
   
-    const { error } = await supabase
-      .from('comments')
-      .insert([
-        { 
-          product_id: productId, 
-          comment_text: newComment, 
-          user_id: user.id, 
-          star: star  // ارسال امتیاز ستاره‌ای
-        }
-      ])
-      .single();
-  
-    if (error) {
-      console.error('Error adding comment:', error);
-    } else {
-      fetchComments(); // بارگذاری دوباره کامنت‌ها بعد از ارسال کامنت جدید
-      setNewComment(''); // پاک کردن فیلد کامنت
-      setstar(0); // ریست کردن امتیاز به ۰ یا ۱
-    }
-  };
-  
-  
+
 
   // حذف کامنت
   const handleDeleteComment = async (commentId: number) => {
@@ -128,10 +146,34 @@ const handleAddComment = async () => {
   // بررسی وضعیت بارگذاری و نمایش اطلاعات
   if (loading) {
     return <div className='mt-96 loader'></div>;
-  }
+  } 
+  //کد درصد کامنت مثبت
+  const goodComments =comments.filter(comment=>comment.star>2);
+  const positivePercentage = comments.length > 0 ? (goodComments.length / comments.length) * 100 : 0;
+  //کد امتیاز دهی این کالا
+  const calculateAverageStars = () => {
+    if (comments.length === 0) return 0;  // اگر کامنتی وجود ندارد، میانگین ۰ می‌شود.
+    
+    const totalStars = comments.reduce((sum, comment) => sum + comment.star, 0); // جمع کردن همه ستاره‌ها
+    return totalStars / comments.length; // محاسبه میانگین
+  };
+  
+  const averageStars = calculateAverageStars(); 
 
   return (
         <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
+          {/* میانگین امتیاز */}
+           <div className="mb-4">
+        <span className="flex justify-end  mr-5 text-sm font-semibold text-gray-800 mt-5">
+          میانگین امتیاز: {averageStars.toFixed(1)} از 5
+        </span>
+      </div>
+      {/* درصد کامنت مثبت */}
+      <div className="mb-4">
+        <span  className="flex justify-end  mr-5 text-sm font-semibold text-gray-800 mt-5">
+          درصد کامنت‌های مثبت:   %{positivePercentage.toFixed(1)}
+        </span>
+      </div>
         <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
   <div className="rating">
     <input 
@@ -186,7 +228,7 @@ const handleAddComment = async () => {
             <div key={comment.id} className="p-4 bg-gray-50 rounded-lg shadow-md">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-lg font-semibold text-gray-700 text-ff">
-                  نام کاربر: {user?.user_metadata?.first_name || 'کاربر ناشناس'}
+                نام کاربر: {comment.name || 'کاربر ناشناس'}
                 </span>
                 <span className="text-sm text-gray-500">
                   {moment(comment.created_at).format('jYYYY/jMM/jDD HH:mm:ss')}
@@ -251,6 +293,7 @@ const handleAddComment = async () => {
         <p className="mt-4 text-red-600">برای ارسال کامنت ابتدا وارد شوید.</p>
       )}
     </div>
+    
   );
 };
 

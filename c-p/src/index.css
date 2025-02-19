@@ -44,3 +44,19 @@
     60%{background-position:0%  50%, 50% 100%,100%   0%}
     80%{background-position:0%  50%, 50%  50%,100% 100%}
 }
+/* استایل‌های برای نمایش پیغام ارور */
+
+.error-popup {
+  direction: rtl; /* راست‌چین کردن پاپ‌آپ */
+  text-align: right; /* راست‌چین کردن متن */
+}
+
+.error-title {
+  font-size: 18px; /* اندازه بزرگتر برای عنوان */
+  font-weight: bold; /* پررنگ کردن عنوان */
+}
+
+.error-text {
+  font-size: 14px; /* اندازه کوچکتر برای متن ارور */
+  line-height: 1.5; /* فاصله بین خطوط */
+}
