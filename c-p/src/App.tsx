@@ -13,6 +13,7 @@ import ProfilePage2 from './components/profilePage2/Profilepage2';
 import Transaction from './components/transaction/Transaction';
 import ProductDetailPage from './components/ProductDetailPage/ProductDetailPage';
 import Shopping_cart from './components/sabadkharid/shopping_cart';
+import Purchas_esteps from './components/Purchase steps/Purchase steps';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/Orders" element={<Transaction />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/Shoping" element={<Shopping_cart />} />
+          <Route path="/Purchasesteps" element={<Purchas_esteps />} />
           {/* مسیر پیش‌فرض */}
           <Route path="*" element={<Else />} />
         </Routes>
